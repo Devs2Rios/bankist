@@ -5,6 +5,8 @@
 
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
+const section1 = document.querySelector('#section--1');
+const btnScrollTo = document.querySelector('.btn--scroll-to');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 
@@ -28,4 +30,8 @@ document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
         closeModal();
     }
+});
+
+btnScrollTo.addEventListener('click', function (e) {
+    section1.scrollIntoView({ behavior: 'smooth' });
 });
