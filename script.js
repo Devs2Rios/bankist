@@ -3,12 +3,17 @@
 ///////////////////////////////////////
 // Modal window
 
+const nav = document.querySelector('.nav');
+const header = document.querySelector('.header');
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const section1 = document.querySelector('#section--1');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
 
 const openModal = function (e) {
     e.preventDefault();
@@ -36,33 +41,48 @@ btnScrollTo.addEventListener('click', function (e) {
     section1.scrollIntoView({ behavior: 'smooth' });
 });
 
-// Select the parent element
 document.querySelector('.nav__links').addEventListener('click', function (e) {
     e.preventDefault();
-    // Matching strategy
     if (e.target.classList.contains('nav__link')) {
         const id = e.target.getAttribute('href');
         document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
     }
 });
 
-const h1 = document.querySelector('h1');
+tabsContainer.addEventListener('click', function (e) {
+    const clicked = e.target.closest('.operations__tab');
+    if (!clicked) return;
+    tabs.forEach(t => t.classList.remove('operations__tab--active'));
+    tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+    clicked.classList.add('operations__tab--active');
+    document
+        .querySelector(`.operations__content--${clicked.dataset.tab}`)
+        .classList.add('operations__content--active');
+});
 
-// Downwards the parent
-console.log(h1.querySelectorAll('.highlight')); // Children with specific class
-console.log(h1.childNodes); // All children including whitespace
-console.log(h1.children); // Only direct children
-h1.firstElementChild.style.color = 'white'; // First child element
-h1.lastElementChild.style.color = 'white'; // Last child element
+const handleHover = function (e) {
+    if (e.target.classList.contains('nav__link')) {
+        const link = e.target;
+        const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+        const logo = link.closest('.nav').querySelector('img');
+        siblings.forEach(el => {
+            if (el !== link) el.style.opacity = this;
+        });
+        logo.style.opacity = this;
+    }
+};
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
 
-// Upwards the parent
-console.log(h1.parentNode); // Parent node object if present
-console.log(h1.parentElement); // Element object representing parent element
-console.log(h1.closest('.header')); // Closest specific element
+const stickyNav = function (entries) {
+    const [entry] = entries;
+    if (!entry.isIntersecting) nav.classList.add('sticky');
+    else nav.classList.remove('sticky');
+};
+const headerObserver = new IntersectionObserver(stickyNav, {
+    root: null,
+    threshold: 0,
+    rootMargin: `-${nav.getBoundingClientRect().height}px`,
+});
 
-// Siblings
-console.log(h1.previousElementSibling); // Previous sibling element
-console.log(h1.nextElementSibling); // Next sibling element
-console.log(h1.previousSibling); // Previous sibling node
-console.log(h1.nextSibling); // Next sibling node
-console.log(h1.parentElement.children); // All children of parent element
+headerObserver.observe(header);
