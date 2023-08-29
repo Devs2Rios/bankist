@@ -1,8 +1,7 @@
 'use strict';
 
 ///////////////////////////////////////
-// Modal window
-
+// Elements
 const nav = document.querySelector('.nav');
 const header = document.querySelector('.header');
 const modal = document.querySelector('.modal');
@@ -15,33 +14,33 @@ const tabs = document.querySelectorAll('.operations__tab');
 const tabsContainer = document.querySelector('.operations__tab-container');
 const tabsContent = document.querySelectorAll('.operations__content');
 const allSections = document.querySelectorAll('.section');
+const imgTargets = document.querySelectorAll('img[data-src]');
 
+///////////////////////////////////////
+// Modal
 const openModal = function (e) {
     e.preventDefault();
     modal.classList.remove('hidden');
     overlay.classList.remove('hidden');
 };
-
 const closeModal = function () {
     modal.classList.add('hidden');
     overlay.classList.add('hidden');
 };
-
 btnsOpenModal.forEach(btn => btn.addEventListener('click', openModal));
-
 btnCloseModal.addEventListener('click', closeModal);
 overlay.addEventListener('click', closeModal);
-
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
         closeModal();
     }
 });
 
+///////////////////////////////////////
+// Smooth Scrolling
 btnScrollTo.addEventListener('click', function (e) {
     section1.scrollIntoView({ behavior: 'smooth' });
 });
-
 document.querySelector('.nav__links').addEventListener('click', function (e) {
     e.preventDefault();
     if (e.target.classList.contains('nav__link')) {
@@ -50,6 +49,8 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
     }
 });
 
+///////////////////////////////////////
+// Change tabs
 tabsContainer.addEventListener('click', function (e) {
     const clicked = e.target.closest('.operations__tab');
     if (!clicked) return;
@@ -61,6 +62,8 @@ tabsContainer.addEventListener('click', function (e) {
         .classList.add('operations__content--active');
 });
 
+///////////////////////////////////////
+// Menu fade animation
 const handleHover = function (e) {
     if (e.target.classList.contains('nav__link')) {
         const link = e.target;
@@ -75,6 +78,8 @@ const handleHover = function (e) {
 nav.addEventListener('mouseover', handleHover.bind(0.5));
 nav.addEventListener('mouseout', handleHover.bind(1));
 
+///////////////////////////////////////
+// Sticky navigation
 const stickyNav = function (entries) {
     const [entry] = entries;
     if (!entry.isIntersecting) nav.classList.add('sticky');
@@ -85,22 +90,39 @@ const headerObserver = new IntersectionObserver(stickyNav, {
     threshold: 0,
     rootMargin: `-${nav.getBoundingClientRect().height}px`,
 });
-
 headerObserver.observe(header);
 
+///////////////////////////////////////
+// Reveal sections
 const revealSection = function (entries, observer) {
     const [entry] = entries;
     if (!entry.isIntersecting) return;
     entry.target.classList.remove('section--hidden');
     observer.unobserve(entry.target);
 };
-
 const sectionObserver = new IntersectionObserver(revealSection, {
     root: null,
     threshold: 0.15,
 });
-
 allSections.forEach(function (section) {
     sectionObserver.observe(section);
     section.classList.add('section--hidden');
 });
+
+///////////////////////////////////////
+// Lazy loading images
+const loadImg = function (entries, observer) {
+    const [entry] = entries;
+    if (!entry.isIntersecting) return;
+    entry.target.src = entry.target.dataset.src;
+    entry.target.addEventListener('load', function () {
+        entry.target.classList.remove('lazy-img');
+    });
+    imgObserver.unobserve(entry.target);
+};
+const imgObserver = new IntersectionObserver(loadImg, {
+    root: null,
+    threshold: 0,
+    rootMargin: '200px',
+});
+imgTargets.forEach(img => imgObserver.observe(img));
