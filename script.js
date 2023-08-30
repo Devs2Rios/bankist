@@ -15,6 +15,10 @@ const tabsContainer = document.querySelector('.operations__tab-container');
 const tabsContent = document.querySelectorAll('.operations__content');
 const allSections = document.querySelectorAll('.section');
 const imgTargets = document.querySelectorAll('img[data-src]');
+const slider = document.querySelector('.slider');
+const slides = document.querySelectorAll('.slide');
+const btnLeft = document.querySelector('.slider__btn--left');
+const btnRight = document.querySelector('.slider__btn--right');
 
 ///////////////////////////////////////
 // Modal
@@ -126,3 +130,23 @@ const imgObserver = new IntersectionObserver(loadImg, {
     rootMargin: '200px',
 });
 imgTargets.forEach(img => imgObserver.observe(img));
+
+///////////////////////////////////////
+// Slider
+let curSlide = 0;
+const maxSlide = slides.length - 1;
+const slideChange = function (curSlide = 0) {
+    slides.forEach(function (slide, i) {
+        slide.style.transform = `translateX(${(i - curSlide) * 100}%)`;
+    });
+};
+btnRight.addEventListener('click', function () {
+    if (curSlide === maxSlide) curSlide = 0;
+    else curSlide++;
+    slideChange(curSlide);
+});
+btnLeft.addEventListener('click', function () {
+    if (curSlide === 0) curSlide = maxSlide;
+    else curSlide--;
+    slideChange(curSlide);
+});
