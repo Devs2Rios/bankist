@@ -22,10 +22,10 @@ const btnRight = document.querySelector('.slider__btn--right');
 const dotContainer = document.querySelector('.dots');
 
 ///////////////////////////////////////
-// No scrolling on load
-window.onbeforeunload = function () {
+// No scrolling before unload
+window.addEventListener('beforeunload', function () {
     window.scrollTo(0, 0);
-};
+});
 
 ///////////////////////////////////////
 // Modal
