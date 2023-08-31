@@ -150,3 +150,14 @@ btnLeft.addEventListener('click', function () {
     else curSlide--;
     slideChange(curSlide);
 });
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') {
+        if (curSlide === 0) curSlide = maxSlide;
+        else curSlide--;
+        slideChange(curSlide);
+    } else if (e.key === 'ArrowRight') {
+        if (curSlide === maxSlide) curSlide = 0;
+        else curSlide++;
+        slideChange(curSlide);
+    }
+});
